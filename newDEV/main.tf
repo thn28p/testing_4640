@@ -166,7 +166,7 @@ resource "digitalocean_firewall" "web_dp_firewall" {
     name = "web-firewall"
 
     # The droplets to apply this firewall to                                   #
-    droplet_ids = digitalocean_droplet.dp_name.*.id
+    droplet_ids = digitalocean_droplet.dp_droplet.*.id
 
     # Internal VPC Rules. We have to let ourselves talk to each other
     inbound_rule {
@@ -232,7 +232,7 @@ resource "digitalocean_firewall" "web_dp_firewall" {
 
 output "server_ip" {
   description = "server ip address:"  
-  value = digitalocean_droplet.dp_name.*.ipv4_address
+  value = digitalocean_droplet.dp_droplet.*.ipv4_address
  }
 
 # output "vpc_id" {  
