@@ -33,20 +33,20 @@ resource "digitalocean_vpc" "web_vpc" {
 }
 
 
-# Create a new Web Droplet in the var region
-resource "digitalocean_droplet" "dp_name" {
-  image    = var.rocky
-  size     = var.rsize
-  count    = var.droplet_count
-  name     = "web-${count.index + 1}"
-  tags     = [digitalocean_tag.do_tag.id]
-  region   = var.region
-  ssh_keys = [data.digitalocean_ssh_key.ssh_key.id]
-  vpc_uuid = digitalocean_vpc.web_vpc.id
-  lifecycle {
-   create_before_destroy = true
-  }
-}
+# # Create a new Web Droplet in the var region
+# resource "digitalocean_droplet" "dp_name" {
+#   image    = var.rocky
+#   size     = var.rsize
+#   count    = var.droplet_count
+#   name     = "web-rokcy-${count.index + 1}"
+#   tags     = [digitalocean_tag.do_tag.id]
+#   region   = var.region
+#   ssh_keys = [data.digitalocean_ssh_key.ssh_key.id]
+#   vpc_uuid = digitalocean_vpc.web_vpc.id
+#   lifecycle {
+#    create_before_destroy = true
+#   }
+# }
 
 resource "digitalocean_project_resources" "project_attach" {
   project = data.digitalocean_project.lab_project.id
@@ -57,7 +57,7 @@ resource "digitalocean_project_resources" "project_attach" {
 
 
 #add balancer
-resource "digitalocean_loadbalancer" "lb_resource_name" {
+resource "digitalocean_loadbalancer" "public" {
  name = "loadbalancer-assign01"
  #add 25 520
  #tags = [digitalocean_tag.do_tag.id]
@@ -106,8 +106,8 @@ resource "digitalocean_droplet" "db_droplet" {
 }
 
 resource "digitalocean_database_cluster" "cluster-mongo" {
-  size       = var.usize
-  name       = "example-mongo-cluster"
+  size       = "db-s-1vcpu-1gb"
+  name       = "assign-mongo-cluster"
   engine     = "mongodb"
   version    = "4"
   #add 25 520
