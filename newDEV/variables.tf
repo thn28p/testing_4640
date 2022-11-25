@@ -45,3 +45,9 @@ variable "rocky" {
  type = string
  default = "rockylinux-9-x64"
 }
+
+#set rockylinux size
+variable "rsize" {
+ type = string
+ default = "s-1vcpu-512mb-10gb"
+}
