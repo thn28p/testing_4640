@@ -35,13 +35,12 @@ resource "digitalocean_vpc" "web_vpc" {
 
 # Create a new Web Droplet in the var region
 resource "digitalocean_droplet" "dp_name" {
-#resource "digitalocean_droplet" "tag7assign01" {
   image    = var.rocky
-  count    = var.droplet_count
+  size     = var.rsize
+  count    = var.droplet_count\droplets
   name     = "web-${count.index + 1}"
   tags     = [digitalocean_tag.do_tag.id]
   region   = var.region
-  size     = "s-1vcpu-512mb-10gb"
   ssh_keys = [data.digitalocean_ssh_key.ssh_key.id]
   vpc_uuid = digitalocean_vpc.web_vpc.id
   lifecycle {
@@ -53,12 +52,13 @@ resource "digitalocean_project_resources" "project_attach" {
   project = data.digitalocean_project.lab_project.id
   resources = flatten([ digitalocean_droplet.dp_name.*.urn])
 }
-# resources = flatten([ digitalocean_droplet . tag7assign01.*.urn])
-# }
+
 
 #add balancer
-resource "digitalocean_loadbalancer" "public" {
+resource "digitalocean_loadbalancer" "lb_resource_name" {
  name = "loadbalancer-assign01"
+ #add 25 520
+ tags     = [digitalocean_tag.do_tag.id]
  region = var.region
 
 forwarding_rule {
@@ -79,6 +79,9 @@ forwarding_rule {
 }
 
 
+
+
+
 #add database
 resource "digitalocean_database_firewall" "example-fw" {
   cluster_id = digitalocean_database_cluster.cluster-mongo.id
@@ -89,19 +92,24 @@ resource "digitalocean_database_firewall" "example-fw" {
   }
 }
 
+#create droplet that connects to db 
 resource "digitalocean_droplet" "db_droplet" {
+  image  = var.ubuntu
+  size   = var.usize 
   count  = var.droplet_count
   name   = "web-${count.index + 1}"
-  size   = "s-1vcpu-1gb"
-  image  = "ubuntu-22-04-x64"
+  #add 25 520
+  tags   = [digitalocean_tag.do_tag.id]
   region = var.region
 }
 
 resource "digitalocean_database_cluster" "cluster-mongo" {
+  size       = var.usize
   name       = "example-mongo-cluster"
   engine     = "mongodb"
   version    = "4"
-  size       = "db-s-1vcpu-1gb"
+  #add 25 520
+  tags   = [digitalocean_tag.do_tag.id]
   region     = var.region
   node_count = 1
 
@@ -112,9 +120,11 @@ resource "digitalocean_database_cluster" "cluster-mongo" {
 # Create a bastion server
 resource "digitalocean_droplet" "bastion_dp" {
   image    = var.rocky
-  name     = "bastion-${var.region}"
-  region   = var.region
   size     = var.rsize
+  name     = "bastion-${var.region}"
+  #add 25 520
+  tags   = [digitalocean_tag.do_tag.id]
+  region   = var.region
   ssh_keys = [data.digitalocean_ssh_key.ssh_key.id]
   vpc_uuid = digitalocean_vpc.web_vpc.id
 }
@@ -148,7 +158,7 @@ resource "digitalocean_firewall" "bastion_firewall" {
 
 
 
-resource "digitalocean_firewall" "web" {
+resource "digitalocean_firewall" "web_dp_firewall" {
 
     # The name we give our firewall for ease of use                            #    
     name = "web-firewall"
@@ -219,5 +229,20 @@ resource "digitalocean_firewall" "web" {
 
 
 output "server_ip" {
+  description = "server ip address:"  
   value = digitalocean_droplet.dp_name.*.ipv4_address
  }
+
+output "vpc_id" {  
+    description = "ID of project VPC:"  
+    value     = digitalocean_vpc.web_vpc.id
+  }
+
+output "lb_url" {
+      description = "URL of load balancer:"
+      value     = "loadbalancer-assign01"}
+      
+output "web_server_count" {
+      description = "Number of web servers provisioned"
+      value       = ${count.index}#var.droplet_count
+      }

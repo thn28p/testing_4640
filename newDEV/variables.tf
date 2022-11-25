@@ -1,6 +1,5 @@
 
-#terraform variables
-#
+
 # The API token
 variable "do_token" {}
 
@@ -40,14 +39,27 @@ variable "vpc" {
  default = "vpcassign01"
 }
 
-#set rockylinux name
+#set rockylinux version
 variable "rocky" {
  type = string
  default = "rockylinux-9-x64"
 }
 
+
 #set rockylinux size
 variable "rsize" {
  type = string
  default = "s-1vcpu-512mb-10gb"
+}
+
+#set ubuntu version
+variable "ubuntu" {
+ type = string
+ default = "ubuntu-22-04-x64"
+}
+
+#set rockylinux size
+variable "usize" {
+ type = string
+ default = "s-1vcpu-1gb"
 }
