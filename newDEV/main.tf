@@ -53,7 +53,7 @@ resource "digitalocean_project_resources" "project_attach" {
   resources = flatten([ digitalocean_droplet.db_droplet.*.urn])
   #ad  ad ad ad ad 
 #   resources = flatten([ digitalocean_droplet.dp_name.*.urn])
-# }
+ }
 
 
 #add balancer
