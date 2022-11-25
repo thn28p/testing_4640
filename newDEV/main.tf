@@ -36,10 +36,10 @@ resource "digitalocean_vpc" "web_vpc" {
 # Create a new Web Droplet in the var region
 resource "digitalocean_droplet" "dp_name" {
 #resource "digitalocean_droplet" "tag7assign01" {
-  image    = "rockylinux-9-x64"
+  image    = var.rocky
   count    = var.droplet_count
   name     = "web-${count.index + 1}"
-  tags     = [digitalocean_tag.do_tag.id]
+  tags     = var.tag #[digitalocean_tag.do_tag.id]
   region   = var.region
   size     = "s-1vcpu-512mb-10gb"
   ssh_keys = [data.digitalocean_ssh_key.ssh_key.id]

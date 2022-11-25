@@ -39,3 +39,9 @@ variable "vpc" {
  type = string
  default = "vpcassign01"
 }
+
+#set rockylinux name
+variable "rocky" {
+ type = string
+ default = "rockylinux-9-x64"
+}
