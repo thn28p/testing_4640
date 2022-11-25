@@ -39,7 +39,7 @@ resource "digitalocean_droplet" "dp_name" {
   image    = var.rocky
   count    = var.droplet_count
   name     = "web-${count.index + 1}"
-  tags     = var.tag #[digitalocean_tag.do_tag.id]
+  tags     = [digitalocean_tag.do_tag.id]
   region   = var.region
   size     = "s-1vcpu-512mb-10gb"
   ssh_keys = [data.digitalocean_ssh_key.ssh_key.id]
