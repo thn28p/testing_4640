@@ -37,7 +37,7 @@ resource "digitalocean_vpc" "web_vpc" {
 resource "digitalocean_droplet" "dp_name" {
   image    = var.rocky
   size     = var.rsize
-  count    = var.droplet_count\droplets
+  count    = var.droplet_count
   name     = "web-${count.index + 1}"
   tags     = [digitalocean_tag.do_tag.id]
   region   = var.region
