@@ -13,28 +13,29 @@ provider "digitalocean" {
 }
 
 data "digitalocean_ssh_key" "ssh_key"{
-  name = "lab4Rocky"
+  name = var.ssh_key
 }
 
 data "digitalocean_project" "lab_project" {
-name = "4640_labs"
+name = var.project
 }
 
 #Create a new tag
 resource "digitalocean_tag" "do_tag" {
-name = "tag7assign01"
+name = var.tag
 }
 
 
 #Create a new VPC
 resource "digitalocean_vpc" "web_vpc" {
- name     = "vpcassign01"
+ name     = var.vpc
  region   = var.region
 }
 
 
 # Create a new Web Droplet in the var region
-resource "digitalocean_droplet" "tag7assign01" {
+resource "digitalocean_droplet" "dp_name" {
+#resource "digitalocean_droplet" "tag7assign01" {
   image    = "rockylinux-9-x64"
   count    = var.droplet_count
   name     = "web-${count.index + 1}"
@@ -50,9 +51,10 @@ resource "digitalocean_droplet" "tag7assign01" {
 
 resource "digitalocean_project_resources" "project_attach" {
   project = data.digitalocean_project.lab_project.id
-  resources = flatten([ digitalocean_droplet.tag7assign01.*.urn])
+  resources = flatten([ digitalocean_droplet.dp_name.*.urn])
 }
-
+# resources = flatten([ digitalocean_droplet . tag7assign01.*.urn])
+# }
 
 #add balancer
 resource "digitalocean_loadbalancer" "public" {
@@ -72,7 +74,7 @@ forwarding_rule {
   protocol  = "tcp"
  }
 
- droplet_tag = "tag7assign01"
+ droplet_tag = var.tag #"tag7assign01"
  vpc_uuid = digitalocean_vpc.web_vpc.id
 }
 
@@ -83,7 +85,7 @@ resource "digitalocean_database_firewall" "example-fw" {
 
   rule {
     type  = "tag"
-    value = "tag7assign01"
+    value = var.tag
   }
 }
 
@@ -152,7 +154,7 @@ resource "digitalocean_firewall" "web" {
     name = "web-firewall"
 
     # The droplets to apply this firewall to                                   #
-    droplet_ids = digitalocean_droplet.tag7assign01.*.id
+    droplet_ids = digitalocean_droplet.dp_name.*.id
 
     # Internal VPC Rules. We have to let ourselves talk to each other
     inbound_rule {
@@ -217,5 +219,5 @@ resource "digitalocean_firewall" "web" {
 
 
 output "server_ip" {
-  value = digitalocean_droplet.tag7assign01.*.ipv4_address
+  value = digitalocean_droplet.dp_name.*.ipv4_address
  }
