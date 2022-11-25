@@ -58,7 +58,7 @@ resource "digitalocean_project_resources" "project_attach" {
 resource "digitalocean_loadbalancer" "lb_resource_name" {
  name = "loadbalancer-assign01"
  #add 25 520
- tags     = [digitalocean_tag.do_tag.id]
+ #tags = [digitalocean_tag.do_tag.id]
  region = var.region
 
 forwarding_rule {
