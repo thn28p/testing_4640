@@ -74,14 +74,14 @@ forwarding_rule {
   protocol  = "tcp"
  }
 
- droplet_tag = var.tag #"tag7assign01"
+ droplet_tag = var.tag 
  vpc_uuid = digitalocean_vpc.web_vpc.id
 }
 
 
 #add database
 resource "digitalocean_database_firewall" "example-fw" {
-  cluster_id = digitalocean_database_cluster.mongodb-example.id
+  cluster_id = digitalocean_database_cluster.cluster-mongo.id
 
   rule {
     type  = "tag"
@@ -89,7 +89,7 @@ resource "digitalocean_database_firewall" "example-fw" {
   }
 }
 
-resource "digitalocean_droplet" "tag7assign02" {
+resource "digitalocean_droplet" "db_droplet" {
   count  = var.droplet_count
   name   = "web-${count.index + 1}"
   size   = "s-1vcpu-1gb"
@@ -97,7 +97,7 @@ resource "digitalocean_droplet" "tag7assign02" {
   region = var.region
 }
 
-resource "digitalocean_database_cluster" "mongodb-example" {
+resource "digitalocean_database_cluster" "cluster-mongo" {
   name       = "example-mongo-cluster"
   engine     = "mongodb"
   version    = "4"
