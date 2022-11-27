@@ -169,6 +169,8 @@ resource "digitalocean_database_cluster" "cluster-mongo" {
 
 resource "digitalocean_database_firewall" "example-fw" {
   cluster_id = digitalocean_database_cluster.cluster-mongo.id
+  
+  count = var.droplet_count
 
   rule {
     type  = "droplet"
