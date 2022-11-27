@@ -24,7 +24,7 @@ variable "ssh_key" {
 #set project name
 variable "project" {
  type = string
- default = "4640_labs"
+ default = "4640-labs"
 }
 
 #set tag name
